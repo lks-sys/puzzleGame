@@ -1,0 +1,18 @@
+{
+  "name": "신나는 어린이 퍼즐놀이",
+  "short_name": "신나는 퍼즐놀이",
+  "description": "어린이를 위한 다양하고 즐거운 퍼즐 맞추기 게임 앱",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#FFF9F0",
+  "theme_color": "#FF6B6B",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

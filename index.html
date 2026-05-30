@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Progressive Web App Configuration -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="assets/icon-512.png">
+  <title>🧩 신나는 퍼즐놀이 | 어린이 퍼즐 게임</title>
+  <!-- Google Fonts for friendly rounded typography -->
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* --- CSS Variables & Color System --- */
+    :root {
+      --color-primary: #FF6B6B;     /* Pastel Pink/Red */
+      --color-secondary: #FFD93D;   /* Vibrant Yellow */
+      --color-success: #6BCB77;     /* Fresh Green */
+      --color-accent: #4D96FF;      /* Sky Blue */
+      --color-bg-warm: #FFF9F0;     /* Cozy Cream Home Background */
+      --color-bg-complete: #87CEEB; /* Sky Blue Completion Background */
+      --font-main: 'Jua', 'Nunito', sans-serif;
+      --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      --transition-smooth: all 0.3s ease;
+    }
+
+    /* --- Reset & Global Styles --- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--color-bg-warm);
+      color: #4A4A4A;
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background-color 1s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Decorative background blobs for a playful kids aesthetic */
+    .bg-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: -1;
+      opacity: 0.45;
+      animation: float 8s infinite alternate ease-in-out;
+    }
+    .bg-blob-1 {
+      width: 300px;
+      height: 300px;
+      background-color: #FFE5B4;
+      top: -50px;
+      left: -100px;
+    }
+    .bg-blob-2 {
+      width: 400px;
+      height: 400px;
+      background-color: #E8F0FE;
+      bottom: -100px;
+      right: -100px;
+      animation-delay: -3s;
+    }
+
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, 40px) scale(1.15); }
+    }
+
+    /* --- Typography Utilities --- */
+    h1, h2, h3 {
+      font-weight: normal;
+      text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.8);
+    }
+
+    button {
+      font-family: var(--font-main);
+      border: none;
+      outline: none;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* --- Screens Container --- */
+    .screen {
+      width: 100%;
+      max-width: 480px; /* Mobile focused max-width */
+      min-height: 100vh;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 20px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ==========================================
+       SCREEN 1: HOME VIEW
+       ========================================== */
+    .home-header {
+      text-align: center;
+      margin-top: 10px;
+      animation: bounceIn 0.8s ease;
+    }
+
+    .app-title {
+      font-size: 2.5rem;
+      color: var(--color-primary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      text-shadow: 3px 3px 0 #FFF, 5px 5px 0 rgba(0,0,0,0.06);
+    }
+
+    .app-subtitle {
+      font-size: 1.1rem;
+      color: #8C7B6E;
+      background: rgba(255, 255, 255, 0.6);
+      padding: 4px 16px;
+      border-radius: 20px;
+      border: 1px dashed rgba(255, 107, 107, 0.3);
+      margin-top: 6px;
+    }
+
+    /* Picture Selector Grid */
+    .section-title {
+      align-self: flex-start;
+      font-size: 1.3rem;
+      color: #333;
+      margin-left: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      width: 100%;
+      perspective: 1000px;
+    }
+
+    .image-card {
+      background: white;
+      border-radius: 24px;
+      overflow: hidden;
+      padding: 8px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+      border: 4px solid transparent;
+      transition: var(--transition-bounce);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .image-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .image-card.selected {
+      border-color: var(--color-secondary);
+      box-shadow: 0 0 20px 4px rgba(255, 217, 61, 0.6);
+      transform: translateY(-3px) scale(1.03);
+    }
+
+    .image-card-img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border-radius: 18px;
+      background-color: #EEE;
+    }
+
+    .image-card-title {
+      font-size: 1rem;
+      text-align: center;
+      color: #555;
+      padding-bottom: 2px;
+    }
+
+    /* Piece Selector Styles */
+    .piece-selector-container {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.55);
+      border-radius: 28px;
+      padding: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .piece-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .piece-btn {
+      flex: 1;
+      padding: 12px 0;
+      font-size: 1.1rem;
+      color: #666;
+      background: white;
+      border-radius: 20px;
+      border: 2px solid #EAEAEA;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
+      transition: var(--transition-bounce);
+    }
+
+    .piece-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .piece-btn.active {
+      background: var(--color-accent);
+      color: white;
+      border-color: var(--color-accent);
+      box-shadow: 0 6px 12px rgba(77, 150, 255, 0.35);
+      transform: scale(1.05);
+    }
+
+    /* Action Buttons */
+    .start-btn {
+      width: 100%;
+      max-width: 320px;
+      padding: 18px 0;
+      font-size: 1.6rem;
+      color: white;
+      background: linear-gradient(135deg, var(--color-primary), #FF8E8E);
+      border-radius: 25px;
+      border-bottom: 6px solid #D64545;
+      box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+      transition: var(--transition-bounce);
+      margin-top: 10px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+      animation: heartbeat 2s infinite ease-in-out;
+    }
+
+    .start-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .start-btn:active {
+      transform: translateY(4px);
+      border-bottom-width: 2px;
+    }
+
+    .start-btn:disabled {
+      background: #CCCCCC;
+      border-bottom-color: #999999;
+      box-shadow: none;
+      cursor: not-allowed;
+      animation: none;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+
+    /* ==========================================
+       SCREEN 2: GAME VIEW
+       ========================================== */
+    .game-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 8px;
+    }
+
+    .back-btn {
+      padding: 10px 18px;
+      font-size: 1rem;
+      color: #7B6E64;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      transition: var(--transition-bounce);
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .back-btn:hover {
+      transform: scale(1.05) translateY(-2px);
+    }
+
+    .status-counter {
+      background: var(--color-primary);
+      color: white;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 1.1rem;
+      box-shadow: 0 6px 12px rgba(255, 107, 107, 0.25);
+      border-bottom: 3px solid #D64545;
+    }
+
+    /* Polaroid Thumbnail Hint Section */
+    .hint-container {
+      perspective: 1000px;
+      margin: 4px 0;
+    }
+
+    .hint-card {
+      background: white;
+      padding: 8px 8px 18px 8px;
+      border-radius: 12px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+      transform: rotate(-2deg);
+      transition: var(--transition-bounce);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid rgba(0,0,0,0.03);
+    }
+
+    .hint-card:hover {
+      transform: rotate(0deg) scale(1.1);
+      z-index: 10;
+    }
+
+    .hint-card-img {
+      width: 100px;
+      height: 75px;
+      object-fit: cover;
+      border-radius: 6px;
+      background-color: #EEE;
+    }
+
+    .hint-card-text {
+      font-size: 0.75rem;
+      color: #9C8E84;
+    }
+
+    /* Puzzle Board Grid */
+    .board-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 10px 0;
+    }
+
+    #puzzle-board {
+      display: grid;
+      width: 100%;
+      background: #F0E6D2;
+      border-radius: 20px;
+      padding: 8px;
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1), inset 0 2px 5px rgba(255,255,255,0.7);
+      box-sizing: border-box;
+      gap: 4px;
+      position: relative;
+      transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    /* Puzzle Board Cells */
+    .board-cell {
+      aspect-ratio: inherit;
+      background: #E5DAC2;
+      border: 2px dashed #B8A98F;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      box-sizing: border-box;
+    }
+
+    .board-cell::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 80%);
+      pointer-events: none;
+    }
+
+    .board-cell.correct-flash {
+      animation: flashCorrect 0.5s ease-out;
+      border-color: var(--color-success) !important;
+      box-shadow: 0 0 15px var(--color-success);
+      z-index: 5;
+    }
+
+    .board-cell.wrong-flash {
+      animation: shake 0.5s ease-in-out, flashWrong 0.5s ease-out;
+      border-color: var(--color-primary) !important;
+      box-shadow: 0 0 15px var(--color-primary);
+      z-index: 5;
+    }
+
+    /* Bottom Pieces Tray Component */
+    .tray-wrapper {
+      width: 100%;
+      margin-top: 10px;
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tray-header {
+      font-size: 1.1rem;
+      color: #666;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+
+    #pieces-tray {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 8px 4px 14px 4px;
+      width: 100%;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0,0,0,0.1) transparent;
+      min-height: 90px;
+      align-items: center;
+    }
+
+    #pieces-tray::-webkit-scrollbar {
+      height: 6px;
+    }
+    #pieces-tray::-webkit-scrollbar-thumb {
+      background-color: rgba(0,0,0,0.1);
+      border-radius: 10px;
+    }
+
+    /* Loose Puzzle Pieces in Tray */
+    .tray-piece {
+      flex-shrink: 0;
+      border-radius: 8px;
+      border: 3px solid white;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: var(--transition-bounce);
+      position: relative;
+      box-sizing: border-box;
+      background-repeat: no-repeat;
+    }
+
+    .tray-piece:hover {
+      transform: scale(1.05) translateY(-4px);
+    }
+
+    .tray-piece.selected {
+      border-color: var(--color-secondary);
+      box-shadow: 0 0 15px 3px rgba(255, 217, 61, 0.7);
+      transform: scale(1.08) translateY(-6px);
+      animation: miniJiggle 0.6s infinite alternate ease-in-out;
+    }
+
+    /* Animating Floating Clone Piece */
+    .animating-piece {
+      pointer-events: none;
+      position: fixed;
+      z-index: 1000;
+      border-radius: 8px;
+      border: 3px solid white;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+      background-repeat: no-repeat;
+    }
+
+    /* ==========================================
+       ANIMATIONS KEYFRAMES
+       ========================================== */
+    @keyframes bounceIn {
+      0% { transform: scale(0.3); opacity: 0; }
+      50% { transform: scale(1.05); }
+      70% { transform: scale(0.9); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    @keyframes flashCorrect {
+      0% { background-color: rgba(107, 203, 119, 0.4); }
+      100% { background-color: transparent; }
+    }
+
+    @keyframes flashWrong {
+      0% { background-color: rgba(255, 107, 107, 0.4); }
+      100% { background-color: transparent; }
+    }
+
+    @keyframes miniJiggle {
+      0% { transform: scale(1.08) translateY(-6px) rotate(-1.5deg); }
+      100% { transform: scale(1.08) translateY(-8px) rotate(1.5deg); }
+    }
+
+    /* ==========================================
+       OVERLAY: GAME START ANIMATION
+       ========================================== */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      pointer-events: none;
+    }
+
+    .start-overlay-text {
+      font-size: 5rem;
+      color: var(--color-primary);
+      text-shadow: 4px 4px 0 #FFF, 8px 8px 0 rgba(0,0,0,0.1);
+      opacity: 0;
+      transform: scale(0.2);
+      animation: startZoom 2s forwards ease-out;
+    }
+
+    @keyframes startZoom {
+      0% { transform: scale(0.2); opacity: 0; }
+      30% { transform: scale(1.3); opacity: 1; }
+      50% { transform: scale(1.0); opacity: 1; }
+      80% { transform: scale(1.0); opacity: 0.8; }
+      100% { transform: scale(3.5); opacity: 0; }
+    }
+
+    /* ==========================================
+       OVERLAY: COMPLETION VIEW
+       ========================================== */
+    .complete-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(135, 206, 235, 0.9); /* Skyblue overlay */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      z-index: 1500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1.2s ease-in-out;
+    }
+
+    .complete-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .complete-card {
+      background: white;
+      border-radius: 36px;
+      padding: 30px 40px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      border: 4px solid var(--color-secondary);
+      transform: scale(0.5);
+      transition: var(--transition-bounce);
+      transition-delay: 0.3s;
+      max-width: 90%;
+    }
+
+    .complete-overlay.active .complete-card {
+      transform: scale(1);
+    }
+
+    .complete-emoji {
+      font-size: 4.5rem;
+      margin-bottom: 10px;
+      animation: bounce 1.5s infinite ease-in-out;
+    }
+
+    .complete-title {
+      font-size: 2.4rem;
+      color: var(--color-primary);
+      margin-bottom: 8px;
+      text-shadow: 2px 2px 0 rgba(0,0,0,0.05);
+    }
+
+    .complete-desc {
+      font-size: 1.1rem;
+      color: #666;
+      margin-bottom: 24px;
+      line-height: 1.4;
+    }
+
+    .home-back-btn {
+      padding: 16px 40px;
+      font-size: 1.3rem;
+      color: white;
+      background: var(--color-success);
+      border-radius: 20px;
+      border-bottom: 5px solid #4CA758;
+      box-shadow: 0 8px 16px rgba(107, 203, 119, 0.3);
+      transition: var(--transition-bounce);
+    }
+
+    .home-back-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .home-back-btn:active {
+      transform: translateY(3px);
+      border-bottom-width: 2px;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    /* Sparkle Particle Canvas Background */
+    #complete-canvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Golden Glow Pulse on Complete board */
+    .golden-glow {
+      box-shadow: 0 0 35px 8px #FFD93D, 0 10px 40px rgba(0,0,0,0.15) !important;
+      animation: goldenPulse 2s infinite alternate ease-in-out !important;
+    }
+
+    @keyframes goldenPulse {
+      0% { box-shadow: 0 0 30px 6px #FFD93D, 0 10px 40px rgba(0,0,0,0.15); }
+      100% { box-shadow: 0 0 45px 16px #FFD93D, 0 10px 40px rgba(0,0,0,0.15); }
+    }
+
+    /* --- PWA Install Banner Styles --- */
+    #pwa-install-banner {
+      width: 100%;
+      background: linear-gradient(135deg, #FF9F43, #FF6B6B);
+      color: white;
+      padding: 12px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(255, 107, 107, 0.2);
+      animation: slideDown 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .install-content {
+      max-width: 480px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .install-icon {
+      font-size: 1.8rem;
+    }
+    .install-text-wrapper {
+      flex-grow: 1;
+    }
+    .install-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
+    }
+    .install-subtitle {
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+    .install-action-btn {
+      padding: 8px 16px;
+      background: white;
+      color: var(--color-primary);
+      border-radius: 14px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: var(--transition-bounce);
+    }
+    .install-action-btn:active {
+      transform: scale(0.9);
+    }
+    .install-close-btn {
+      background: transparent;
+      color: rgba(255,255,255,0.7);
+      font-size: 1.1rem;
+      padding: 4px;
+    }
+    @keyframes slideDown {
+      from { transform: translateY(-100%); }
+      to { transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Playful App Installation Banner -->
+  <div id="pwa-install-banner" class="hidden">
+    <div class="install-content">
+      <span class="install-icon">📲</span>
+      <div class="install-text-wrapper">
+        <div class="install-title">홈 화면에 설치하기!</div>
+        <div class="install-subtitle">앱으로 언제든 인터넷 없이 플레이해요!</div>
+      </div>
+      <button id="pwa-install-btn" class="install-action-btn">설치 ⭐️</button>
+      <button id="pwa-close-btn" class="install-close-btn">✕</button>
+    </div>
+  </div>
+
+  <!-- Background Decorative Shapes -->
+  <div class="bg-blob bg-blob-1"></div>
+  <div class="bg-blob bg-blob-2"></div>
+
+  <!-- ==========================================
+       SCREEN 1: HOME VIEW SCREEN
+       ========================================== -->
+  <main id="home-screen" class="screen">
+    <header class="home-header">
+      <h1 class="app-title">🧩 신나는 퍼즐놀이</h1>
+      <p class="app-subtitle">조각을 드래그앤탭 해서 이쁜 그림을 완성해요!</p>
+    </header>
+
+    <div class="image-selector-wrapper" style="width: 100%;">
+      <h2 class="section-title">🖼️ 원본 그림 선택하기</h2>
+      <div id="image-selector-grid" class="image-grid" style="margin-top: 10px;">
+        <!-- Card objects injected dynamically -->
+      </div>
+    </div>
+
+    <div class="piece-selector-container">
+      <h2 class="section-title" style="font-size: 1.1rem; margin-left: 0;">🔢 퍼즐 조각 수 고르기</h2>
+      <div class="piece-buttons">
+        <button class="piece-btn" data-pieces="9">9조각</button>
+        <button class="piece-btn" data-pieces="16">16조각</button>
+        <button class="piece-btn" data-pieces="25">25조각</button>
+        <button class="piece-btn active" data-pieces="30">30조각</button>
+        <button class="piece-btn" data-pieces="36">36조각</button>
+      </div>
+    </div>
+
+    <button id="start-game-btn" class="start-btn" disabled>퍼즐 시작! 🚀</button>
+  </main>
+
+  <!-- ==========================================
+       SCREEN 2: GAMEPLAY SCREEN
+       ========================================== -->
+  <main id="game-screen" class="screen hidden">
+    <header class="game-header">
+      <button id="btn-back-home" class="back-btn">🏠 홈으로</button>
+      <div id="remaining-counter" class="status-counter">남은 조각: 30개</div>
+    </header>
+
+    <!-- Polaroid Thumbnail Hint Box -->
+    <div class="hint-container">
+      <div class="hint-card" id="hint-button">
+        <img id="hint-image" class="hint-card-img" src="" alt="힌트">
+        <span class="hint-card-text">🔍 힌트 그림</span>
+      </div>
+    </div>
+
+    <!-- Puzzle board target grid -->
+    <div class="board-wrapper">
+      <div id="puzzle-board"></div>
+    </div>
+
+    <!-- Shuffled elements container drawer -->
+    <div class="tray-wrapper">
+      <div class="tray-header">📦 조각 서랍 (가로로 넘겨보세요!)</div>
+      <div id="pieces-tray"></div>
+    </div>
+  </main>
+
+  <!-- ==========================================
+       OVERLAYS (START / SUCCESS SCENE)
+       ========================================== -->
+  <div id="start-overlay" class="overlay hidden">
+    <div class="start-overlay-text">START!</div>
+  </div>
+
+  <div id="success-overlay" class="complete-overlay">
+    <canvas id="complete-canvas"></canvas>
+    <div class="complete-card">
+      <div class="complete-emoji">🎉</div>
+      <h2 class="complete-title">완성! 대단해요!</h2>
+      <p class="complete-desc" id="complete-feedback-text">우와! 멋지게 조각을 모두 맞췄어요!<br>정말 멋진 퍼즐박사님이네요!</p>
+      <button id="btn-restart" class="home-back-btn">한 번 더 하기! 🔄</button>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       JAVASCRIPT GAME CONTROLLER MODULE
+       ========================================== -->
+  <script>
+    // --- Custom Characters SVG Drawings ---
+    const CinnamrollSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+      <defs>
+        <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#E8F4F8"/>
+          <stop offset="100%" stop-color="#B9DDF1"/>
+        </linearGradient>
+        <linearGradient id="cloudGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#FFF5F7"/>
+          <stop offset="100%" stop-color="#FFDEE9"/>
+        </linearGradient>
+      </defs>
+      <rect width="800" height="600" fill="url(#skyGrad)"/>
+      <g fill="#FFF">
+        <circle cx="150" cy="120" r="4"/>
+        <circle cx="650" cy="180" r="5"/>
+        <circle cx="250" cy="450" r="3"/>
+        <circle cx="550" cy="400" r="4"/>
+      </g>
+      <g fill="#FFE87C">
+        <polygon points="100,80 103,87 110,88 105,93 106,100 100,96 94,100 95,93 90,88 97,87" />
+        <polygon points="680,120 682,125 687,126 683,130 684,135 680,132 676,135 677,130 673,126 678,125" />
+        <polygon points="200,380 201,383 205,384 202,387 203,391 200,389 197,391 198,387 195,384 199,383" />
+      </g>
+      <path d="M50 480 a 45 45 0 0 1 80 -10 a 50 50 0 0 1 90 10 a 40 40 0 0 1 20 60 H 30 Z" fill="url(#cloudGrad)" opacity="0.85" />
+      <path d="M550 180 a 35 35 0 0 1 60 -10 a 40 40 0 0 1 70 10 a 30 30 0 0 1 20 40 H 520 Z" fill="url(#cloudGrad)" opacity="0.85" />
+      <ellipse cx="400" cy="300" rx="140" ry="110" fill="#FFF" stroke="#68A5C6" stroke-width="4" />
+      <path d="M 280 280 C 120 280 80 400 120 440 C 160 480 240 440 280 340 Z" fill="#FFF" stroke="#68A5C6" stroke-width="4" />
+      <path d="M 520 280 C 680 280 720 400 680 440 C 640 480 560 440 520 340 Z" fill="#FFF" stroke="#68A5C6" stroke-width="4" />
+      <ellipse cx="340" cy="295" rx="12" ry="18" fill="#4B9CD3" />
+      <ellipse cx="338" cy="290" rx="4" ry="6" fill="#FFF" />
+      <ellipse cx="460" cy="295" rx="12" ry="18" fill="#4B9CD3" />
+      <ellipse cx="458" cy="290" rx="4" ry="6" fill="#FFF" />
+      <path d="M 388 320 Q 400 332 412 320" fill="none" stroke="#68A5C6" stroke-width="4" stroke-linecap="round" />
+      <ellipse cx="295" cy="325" rx="18" ry="12" fill="#FFC1C1" />
+      <ellipse cx="505" cy="325" rx="18" ry="12" fill="#FFC1C1" />
+      <polygon points="400,140 408,160 428,160 412,172 418,192 400,180 382,192 388,172 372,160 392,160" fill="#FFE87C" stroke="#D19E00" stroke-width="2" />
+    </svg>`;
+
+    const AmongUsSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+      <defs>
+        <linearGradient id="spaceGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#0F101E"/>
+          <stop offset="100%" stop-color="#241B35"/>
+        </linearGradient>
+        <linearGradient id="visorGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#DDF5FF"/>
+          <stop offset="100%" stop-color="#76B5D7"/>
+        </linearGradient>
+      </defs>
+      <rect width="800" height="600" fill="url(#spaceGrad)"/>
+      <g fill="#FFF">
+        <circle cx="100" cy="150" r="2" opacity="0.8"/>
+        <circle cx="250" cy="80" r="1.5" opacity="0.6"/>
+        <circle cx="650" cy="200" r="2.5" opacity="0.9"/>
+        <circle cx="450" cy="400" r="2" opacity="0.7"/>
+        <circle cx="700" cy="480" r="1" opacity="0.5"/>
+        <circle cx="300" cy="520" r="3" opacity="0.9"/>
+      </g>
+      <circle cx="680" cy="100" r="45" fill="#FF8D6B"/>
+      <path d="M 635 100 Q 680 120 725 100" fill="none" stroke="#FFA78C" stroke-width="6"/>
+      <g transform="translate(180, 160) rotate(-15)">
+        <rect x="-35" y="30" width="40" height="90" rx="15" fill="#1C7E8D" stroke="#000" stroke-width="5" />
+        <rect x="0" y="10" width="80" height="130" rx="40" fill="#28AEC4" stroke="#000" stroke-width="5" />
+        <rect x="5" y="110" width="30" height="40" rx="10" fill="#28AEC4" stroke="#000" stroke-width="5" />
+        <rect x="45" y="110" width="30" height="40" rx="10" fill="#28AEC4" stroke="#000" stroke-width="5" />
+        <rect x="40" y="30" width="60" height="45" rx="20" fill="url(#visorGrad)" stroke="#000" stroke-width="5" />
+        <ellipse cx="60" cy="42" rx="12" ry="5" fill="#FFF" />
+        <path d="M 40 -15 Q 40 -5 40 10" fill="none" stroke="#2D8D44" stroke-width="4"/>
+        <path d="M 40 -15 Q 55 -20 60 -10 Q 50 -5 40 -10" fill="#6BCB77" stroke="#000" stroke-width="2"/>
+        <path d="M 40 -15 Q 25 -20 20 -10 Q 30 -5 40 -10" fill="#6BCB77" stroke="#000" stroke-width="2"/>
+      </g>
+      <g transform="translate(460, 240) rotate(20)">
+        <rect x="75" y="30" width="40" height="90" rx="15" fill="#A81D1D" stroke="#000" stroke-width="5" />
+        <rect x="0" y="10" width="80" height="130" rx="40" fill="#EA3A3A" stroke="#000" stroke-width="5" />
+        <rect x="5" y="110" width="30" height="40" rx="10" fill="#EA3A3A" stroke="#000" stroke-width="5" />
+        <rect x="45" y="110" width="30" height="40" rx="10" fill="#EA3A3A" stroke="#000" stroke-width="5" />
+        <rect x="-20" y="30" width="60" height="45" rx="20" fill="url(#visorGrad)" stroke="#000" stroke-width="5" />
+        <ellipse cx="0" cy="42" rx="12" ry="5" fill="#FFF" />
+        <rect x="25" y="-12" width="30" height="25" fill="#FFF" stroke="#000" stroke-width="3" />
+        <path d="M 55 13 L 65 30" fill="none" stroke="#FFF" stroke-width="6"/>
+      </g>
+    </svg>`;
+
+    const MochielSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+      <defs>
+        <linearGradient id="pinkGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#FFECEF"/>
+          <stop offset="100%" stop-color="#FFCCD5"/>
+        </linearGradient>
+        <linearGradient id="starGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#FFF176"/>
+          <stop offset="100%" stop-color="#FFB300"/>
+        </linearGradient>
+      </defs>
+      <rect width="800" height="600" fill="url(#pinkGrad)"/>
+      <g fill="#FFF" opacity="0.75">
+        <polygon points="120,150 125,140 130,150 140,155 130,160 125,170 120,160 110,155" />
+        <polygon points="680,450 685,440 690,450 700,455 690,460 685,470 680,460 670,455" />
+      </g>
+      <path d="M 230 300 C 130 280 120 180 190 200 C 230 210 240 250 250 300 Z" fill="#FFF" stroke="#FFA4B4" stroke-width="3" />
+      <path d="M 570 300 C 670 280 680 180 610 200 C 570 210 560 250 550 300 Z" fill="#FFF" stroke="#FFA4B4" stroke-width="3" />
+      <rect x="250" y="220" width="300" height="240" rx="120" fill="#FFF" stroke="#FFA4B4" stroke-width="4" />
+      <path d="M 290 230 Q 250 140 310 160 Z" fill="#FFF" stroke="#FFA4B4" stroke-width="4" />
+      <path d="M 295 210 Q 275 160 305 175 Z" fill="#FFA4B4" />
+      <path d="M 510 230 Q 550 140 490 160 Z" fill="#FFF" stroke="#FFA4B4" stroke-width="4" />
+      <path d="M 505 210 Q 525 160 495 175 Z" fill="#FFA4B4" />
+      <ellipse cx="400" cy="110" rx="70" ry="18" fill="none" stroke="#FFE082" stroke-width="7" />
+      <ellipse cx="340" cy="290" rx="12" ry="16" fill="#3D302A" />
+      <circle cx="336" cy="284" r="5" fill="#FFF" />
+      <circle cx="344" cy="294" r="2.5" fill="#FFF" />
+      <ellipse cx="460" cy="290" rx="12" ry="16" fill="#3D302A" />
+      <circle cx="456" cy="284" r="5" fill="#FFF" />
+      <circle cx="464" cy="294" r="2.5" fill="#FFF" />
+      <path d="M 390 310 Q 400 318 410 310" fill="none" stroke="#3D302A" stroke-width="3" stroke-linecap="round" />
+      <ellipse cx="290" cy="330" rx="18" ry="10" fill="#FF8A80" opacity="0.6" />
+      <ellipse cx="510" cy="330" rx="18" ry="10" fill="#FF8A80" opacity="0.6" />
+      <polygon points="400,320 410,345 435,345 415,360 422,385 400,370 378,385 385,360 365,345 390,345" fill="url(#starGrad)" stroke="#FFA000" stroke-width="2" />
+      <circle cx="360" cy="365" r="15" fill="#FFF" stroke="#FFA4B4" stroke-width="3" />
+      <circle cx="440" cy="365" r="15" fill="#FFF" stroke="#FFA4B4" stroke-width="3" />
+    </svg>`;
+
+    const getSvgDataUri = (svgStr) => `data:image/svg+xml;utf8,${encodeURIComponent(svgStr.trim())}`;
+
+    // --- Asset Configurations ---
+    const themes = [
+      { id: 1, name: "무지개 숲속 소풍", path: "assets/image1.png" },
+      { id: 2, name: "귀여운 우주 비행사", path: "assets/image2.png" },
+      { id: 3, name: "돌고래와 바다 산호초", path: "assets/image3.png" },
+      { id: 4, name: "달콤한 캔디 성", path: "assets/image4.png" },
+      { id: 5, name: "행복한 공룡 계곡", path: "assets/image5.png" },
+      { id: 6, name: "시나모롤늘하늘", path: getSvgDataUri(CinnamrollSVG) },
+      { id: 7, name: "어몽어스 우주", path: getSvgDataUri(AmongUsSVG) },
+      { id: 8, name: "천사 아기 모찌엘", path: getSvgDataUri(MochielSVG) }
+    ];
+
+    const gridConfigs = {
+      9: { cols: 3, rows: 3 },
+      16: { cols: 4, rows: 4 },
+      25: { cols: 5, rows: 5 },
+      30: { cols: 6, rows: 5 },
+      36: { cols: 6, rows: 6 }
+    };
+
+    // --- Audio Engine (Web Audio API Synthesizer) ---
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+      }
+
+      init() {
+        if (!this.ctx) {
+          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      play(type) {
+        this.init();
+        const now = this.ctx.currentTime;
+
+        switch (type) {
+          case 'start': {
+            // C4(261.63)->E4(329.63)->G4(392)->C5(523.25) bright arpeggio
+            const freqs = [261.63, 329.63, 392.00, 523.25];
+            freqs.forEach((freq, idx) => {
+              const osc = this.ctx.createOscillator();
+              const gain = this.ctx.createGain();
+              
+              osc.type = 'triangle';
+              osc.frequency.setValueAtTime(freq, now + idx * 0.12);
+              
+              gain.gain.setValueAtTime(0.2, now + idx * 0.12);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.35);
+              
+              osc.connect(gain);
+              gain.connect(this.ctx.destination);
+              
+              osc.start(now + idx * 0.12);
+              osc.stop(now + idx * 0.12 + 0.35);
+            });
+            break;
+          }
+          case 'correct': {
+            // Ding-Dong-Deng: E5(659.25)->G5(783.99)->C6(1046.5), 0.15s intervals
+            const freqs = [659.25, 783.99, 1046.50];
+            freqs.forEach((freq, idx) => {
+              const osc = this.ctx.createOscillator();
+              const gain = this.ctx.createGain();
+              
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(freq, now + idx * 0.15);
+              
+              gain.gain.setValueAtTime(0.18, now + idx * 0.15);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.15 + 0.45);
+              
+              osc.connect(gain);
+              gain.connect(this.ctx.destination);
+              
+              osc.start(now + idx * 0.15);
+              osc.stop(now + idx * 0.15 + 0.45);
+            });
+            break;
+          }
+          case 'wrong': {
+            // Dang! Bb3(233.08Hz), low buzz decay
+            const osc = this.ctx.createOscillator();
+            const filter = this.ctx.createBiquadFilter();
+            const gain = this.ctx.createGain();
+            
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(233.08, now);
+            
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(700, now);
+            
+            gain.gain.setValueAtTime(0.25, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+            
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(this.ctx.destination);
+            
+            osc.start(now);
+            osc.stop(now + 0.4);
+            break;
+          }
+          case 'complete': {
+            // C4(261.6)->G4(392)->E5(659.3)->G5(784)->C6(1046.5) Fanfare
+            const freqs = [261.63, 392.00, 659.25, 783.99, 1046.50];
+            const startOffsets = [0, 0.12, 0.24, 0.36, 0.48];
+            
+            freqs.forEach((freq, idx) => {
+              const osc = this.ctx.createOscillator();
+              const gain = this.ctx.createGain();
+              
+              osc.type = idx === 4 ? 'sine' : 'triangle';
+              osc.frequency.setValueAtTime(freq, now + startOffsets[idx]);
+              
+              const length = idx === 4 ? 0.95 : 0.45;
+              gain.gain.setValueAtTime(0.2, now + startOffsets[idx]);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + startOffsets[idx] + length);
+              
+              osc.connect(gain);
+              gain.connect(this.ctx.destination);
+              
+              osc.start(now + startOffsets[idx]);
+              osc.stop(now + startOffsets[idx] + length);
+            });
+            break;
+          }
+        }
+      }
+    }
+
+    const sound = new SoundEngine();
+
+    // --- State Manager Variables ---
+    let selectedImage = null;
+    let selectedPieces = 30; // Default count
+    let boardState = []; // Contains true/false for matching indices
+    let remainingPiecesCount = 0;
+    let activeSelectedPieceId = null; // Piece active in tray
+    let trayPieceElements = []; // Keeps track of elements in tray
+
+    // --- DOM Elements ---
+    const homeScreen = document.getElementById('home-screen');
+    const gameScreen = document.getElementById('game-screen');
+    const imageSelectorGrid = document.getElementById('image-selector-grid');
+    const pieceBtns = document.querySelectorAll('.piece-btn');
+    const startGameBtn = document.getElementById('start-game-btn');
+    
+    const remainingCounter = document.getElementById('remaining-counter');
+    const hintImage = document.getElementById('hint-image');
+    const puzzleBoard = document.getElementById('puzzle-board');
+    const piecesTray = document.getElementById('pieces-tray');
+    
+    const backHomeBtn = document.getElementById('btn-back-home');
+    const startOverlay = document.getElementById('start-overlay');
+    const successOverlay = document.getElementById('success-overlay');
+    const restartBtn = document.getElementById('btn-restart');
+    const completeCanvas = document.getElementById('complete-canvas');
+
+    // --- UI Setup & Builders ---
+    function buildImageCards() {
+      imageSelectorGrid.innerHTML = '';
+      themes.forEach(theme => {
+        const card = document.createElement('div');
+        card.className = 'image-card';
+        card.dataset.id = theme.id;
+        card.innerHTML = `
+          <img class="image-card-img" src="${theme.path}" alt="${theme.name}" loading="lazy">
+          <div class="image-card-title">${theme.name}</div>
+        `;
+        
+        // Touch & mouse safe click trigger
+        const selectCard = () => {
+          document.querySelectorAll('.image-card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          selectedImage = theme;
+          startGameBtn.disabled = false;
+          sound.init(); // Warm up AudioContext on click
+        };
+        
+        card.addEventListener('click', selectCard);
+        card.addEventListener('touchstart', (e) => {
+          // Prevent standard emulation delay
+          sound.init();
+        }, {passive: true});
+        
+        imageSelectorGrid.appendChild(card);
+      });
+    }
+
+    // Connect Piece Selector Buttons
+    pieceBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        pieceBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedPieces = parseInt(btn.dataset.pieces);
+        sound.init();
+      });
+    });
+
+    // --- Game View Initialization Engine ---
+    function prepareGame() {
+      // 1. Swap screen templates
+      homeScreen.classList.add('hidden');
+      gameScreen.classList.remove('hidden');
+      document.body.style.backgroundColor = 'var(--color-bg-warm)'; // Reset body color
+
+      // 2. Clear overlays
+      successOverlay.classList.remove('active');
+      puzzleBoard.classList.remove('golden-glow');
+
+      // 3. Setup header info
+      remainingCounter.textContent = `남은 조각: ${selectedPieces}개`;
+      remainingPiecesCount = selectedPieces;
+      hintImage.src = selectedImage.path;
+      activeSelectedPieceId = null;
+
+      // 4. Load Grid configuration math
+      const config = gridConfigs[selectedPieces];
+      puzzleBoard.style.aspectRatio = `${config.cols} / ${config.rows}`;
+      puzzleBoard.style.gridTemplateColumns = `repeat(${config.cols}, 1fr)`;
+      puzzleBoard.style.gridTemplateRows = `repeat(${config.rows}, 1fr)`;
+
+      // 5. Spawn clean board grid cells
+      puzzleBoard.innerHTML = '';
+      boardState = new Array(selectedPieces).fill(false);
+
+      for (let i = 0; i < selectedPieces; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'board-cell';
+        cell.dataset.id = i;
+        
+        // Setup Grid Click logic
+        cell.addEventListener('click', () => handleBoardCellTap(i));
+        cell.addEventListener('touchstart', (e) => {
+          sound.init();
+        }, {passive: true});
+        
+        puzzleBoard.appendChild(cell);
+      }
+
+      // 6. Spawn Shuffled Tray Elements
+      buildPiecesTray();
+
+      // 7. Show Start Text Animation
+      triggerStartSequence();
+    }
+
+    // Drawer Tray Assembler
+    function buildPiecesTray() {
+      piecesTray.innerHTML = '';
+      trayPieceElements = [];
+
+      // Create indexed array, shuffle mathematically
+      const shuffledIds = Array.from({ length: selectedPieces }, (_, i) => i);
+      for (let i = shuffledIds.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledIds[i], shuffledIds[j]] = [shuffledIds[j], shuffledIds[i]];
+      }
+
+      const config = gridConfigs[selectedPieces];
+
+      // Build each tray item element
+      shuffledIds.forEach(id => {
+        const piece = document.createElement('div');
+        piece.className = 'tray-piece';
+        piece.dataset.id = id;
+
+        // Apply temporary sizing to calculate proportional sizes
+        // Size gets refined dynamically based on measured board width
+        piecesTray.appendChild(piece);
+        trayPieceElements.push(piece);
+
+        // Click handlers
+        const selectPiece = (e) => {
+          e.stopPropagation();
+          handleTrayPieceTap(id);
+        };
+        piece.addEventListener('click', selectPiece);
+        piece.addEventListener('touchstart', (e) => {
+          sound.init();
+        }, {passive: true});
+      });
+
+      // Recalculate dimensions once layout stabilizes
+      setTimeout(resizeTrayPieces, 50);
+    }
+
+    // Dynamic Slices Cropping Resize
+    function resizeTrayPieces() {
+      if (trayPieceElements.length === 0) return;
+
+      const config = gridConfigs[selectedPieces];
+      const boardRect = puzzleBoard.getBoundingClientRect();
+      const boardWidth = boardRect.width;
+      const boardHeight = boardRect.height;
+      
+      const cellWidth = (boardWidth - (4 * (config.cols - 1)) - 16) / config.cols; // account for gaps/paddings
+      const cellHeight = (boardHeight - (4 * (config.rows - 1)) - 16) / config.rows;
+
+      trayPieceElements.forEach(piece => {
+        const id = parseInt(piece.dataset.id);
+        const col = id % config.cols;
+        const row = Math.floor(id / config.cols);
+
+        piece.style.width = `${cellWidth}px`;
+        piece.style.height = `${cellHeight}px`;
+        piece.style.backgroundImage = `url(${selectedImage.path})`;
+        piece.style.backgroundSize = `${boardWidth - 16}px ${boardHeight - 16}px`;
+        
+        // Exact position slice offset
+        piece.style.backgroundPosition = `-${col * cellWidth}px -${row * cellHeight}px`;
+      });
+    }
+
+    // Trigger resized hook if window shifts
+    window.addEventListener('resize', () => {
+      if (!gameScreen.classList.contains('hidden')) {
+        resizeTrayPieces();
+        // Redraw completed cells too to prevent offset
+        const config = gridConfigs[selectedPieces];
+        const boardRect = puzzleBoard.getBoundingClientRect();
+        const cellWidth = (boardRect.width - (4 * (config.cols - 1)) - 16) / config.cols;
+        const cellHeight = (boardRect.height - (4 * (config.rows - 1)) - 16) / config.rows;
+        
+        document.querySelectorAll('.board-cell').forEach(cell => {
+          const id = parseInt(cell.dataset.id);
+          if (boardState[id]) {
+            const col = id % config.cols;
+            const row = Math.floor(id / config.cols);
+            cell.style.backgroundSize = `${boardRect.width - 16}px ${boardRect.height - 16}px`;
+            cell.style.backgroundPosition = `-${col * cellWidth}px -${row * cellHeight}px`;
+          }
+        });
+      }
+    });
+
+    // --- Interactive Logic Tap Handlers ---
+    function handleTrayPieceTap(id) {
+      // Toggle selection state
+      if (activeSelectedPieceId === id) {
+        activeSelectedPieceId = null;
+        updateSelectedTrayStyles();
+      } else {
+        activeSelectedPieceId = id;
+        updateSelectedTrayStyles();
+      }
+    }
+
+    function updateSelectedTrayStyles() {
+      document.querySelectorAll('.tray-piece').forEach(p => {
+        const pId = parseInt(p.dataset.id);
+        if (pId === activeSelectedPieceId) {
+          p.classList.add('selected');
+        } else {
+          p.classList.remove('selected');
+        }
+      });
+    }
+
+    function handleBoardCellTap(cellIndex) {
+      // 1. Ignore if nothing is highlighted in drawer
+      if (activeSelectedPieceId === null) return;
+
+      // 2. Ignore if cell already has pieces locked
+      if (boardState[cellIndex]) return;
+
+      // 3. Initiate slide animation
+      executePieceSlideAnimation(activeSelectedPieceId, cellIndex);
+    }
+
+    // --- Slide & Check Verification Engine ---
+    function executePieceSlideAnimation(pieceId, cellIndex) {
+      // Find elements
+      const trayEl = document.querySelector(`.tray-piece[data-id="${pieceId}"]`);
+      const cellEl = document.querySelector(`.board-cell[data-id="${cellIndex}"]`);
+
+      if (!trayEl || !cellEl) return;
+
+      // Disable interactions during slide transition to prevent overlaps
+      activeSelectedPieceId = null;
+      updateSelectedTrayStyles();
+
+      // Read boundary boxes
+      const trayRect = trayEl.getBoundingClientRect();
+      const cellRect = cellEl.getBoundingClientRect();
+      const config = gridConfigs[selectedPieces];
+      const boardRect = puzzleBoard.getBoundingClientRect();
+
+      // Create sliding clone element
+      const clone = document.createElement('div');
+      clone.className = 'animating-piece';
+      clone.style.left = `${trayRect.left}px`;
+      clone.style.top = `${trayRect.top}px`;
+      clone.style.width = `${trayRect.width}px`;
+      clone.style.height = `${trayRect.height}px`;
+      clone.style.backgroundImage = `url(${selectedImage.path})`;
+      clone.style.backgroundSize = `${boardRect.width - 16}px ${boardRect.height - 16}px`;
+      clone.style.backgroundPosition = trayEl.style.backgroundPosition;
+      document.body.appendChild(clone);
+
+      // Hide original tray element during motion
+      trayEl.style.visibility = 'hidden';
+
+      // Force frame reflow hook for browser animations
+      clone.offsetHeight;
+
+      // Trigger transition translation
+      clone.style.transition = 'all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+      clone.style.left = `${cellRect.left}px`;
+      clone.style.top = `${cellRect.top}px`;
+      clone.style.width = `${cellRect.width}px`;
+      clone.style.height = `${cellRect.height}px`;
+
+      clone.addEventListener('transitionend', () => {
+        // Evaluate matching rules
+        if (pieceId === cellIndex) {
+          // --- CORRECT HIT! ---
+          boardState[cellIndex] = true;
+          clone.remove();
+
+          // Render locked piece image inside board cell
+          cellEl.style.backgroundImage = `url(${selectedImage.path})`;
+          cellEl.style.backgroundSize = `${boardRect.width - 16}px ${boardRect.height - 16}px`;
+          cellEl.style.backgroundPosition = trayEl.style.backgroundPosition;
+          cellEl.style.borderStyle = 'solid';
+          cellEl.style.borderColor = 'rgba(255,255,255,0.3)';
+
+          // Success indicators
+          cellEl.classList.add('correct-flash');
+          sound.play('correct');
+          
+          setTimeout(() => cellEl.classList.remove('correct-flash'), 500);
+
+          // Permanently purge element from tray
+          trayEl.remove();
+
+          // Decrease remaining counter
+          remainingPiecesCount--;
+          remainingCounter.textContent = `남은 조각: ${remainingPiecesCount}개`;
+
+          // Check if completion is achieved
+          if (remainingPiecesCount === 0) {
+            triggerCompletionSequence();
+          }
+
+        } else {
+          // --- INCORRECT HIT! ---
+          sound.play('wrong');
+          cellEl.classList.add('wrong-flash');
+          
+          setTimeout(() => cellEl.classList.remove('wrong-flash'), 500);
+
+          // Return original visibility in drawer
+          trayEl.style.visibility = 'visible';
+
+          // Slide clone back to original tray spot
+          const targetTrayRect = trayEl.getBoundingClientRect();
+          clone.style.left = `${targetTrayRect.left}px`;
+          clone.style.top = `${targetTrayRect.top}px`;
+          clone.style.width = `${targetTrayRect.width}px`;
+          clone.style.height = `${targetTrayRect.height}px`;
+
+          clone.addEventListener('transitionend', () => {
+            clone.remove();
+          }, { once: true });
+        }
+      }, { once: true });
+    }
+
+    // --- Game Stage Transitions ---
+    function triggerStartSequence() {
+      startOverlay.classList.remove('hidden');
+      sound.play('start');
+      setTimeout(() => {
+        startOverlay.classList.add('hidden');
+      }, 2000);
+    }
+
+    function triggerCompletionSequence() {
+      setTimeout(() => {
+        // 1. Play grand fanfare sound
+        sound.play('complete');
+
+        // 2. Change canvas/body sky blue gradient background
+        document.body.style.backgroundColor = 'var(--color-bg-complete)';
+
+        // 3. Highlight board with golden glow animations & enlarge
+        puzzleBoard.classList.add('golden-glow');
+        puzzleBoard.style.transform = 'scale(1.15)';
+
+        // 4. Activate Success Dialog Overlay
+        setTimeout(() => {
+          successOverlay.classList.add('active');
+          startConfettiEngine();
+        }, 1000);
+
+      }, 500);
+    }
+
+    // --- Success Fireworks/Confetti Engine ---
+    let animId = null;
+    function startConfettiEngine() {
+      const ctx = completeCanvas.getContext('2d');
+      completeCanvas.width = window.innerWidth;
+      completeCanvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF', '#FF8E8E', '#FFFFFF'];
+
+      class Particle {
+        constructor() {
+          this.x = Math.random() * completeCanvas.width;
+          this.y = Math.random() * completeCanvas.height - completeCanvas.height;
+          this.r = Math.random() * 8 + 4;
+          this.color = colors[Math.floor(Math.random() * colors.length)];
+          this.vx = Math.random() * 4 - 2;
+          this.vy = Math.random() * 5 + 3;
+          this.rot = Math.random() * 360;
+          this.vRot = Math.random() * 4 - 2;
+        }
+
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          this.rot += this.vRot;
+
+          if (this.y > completeCanvas.height) {
+            this.y = -10;
+            this.x = Math.random() * completeCanvas.width;
+          }
+        }
+
+        draw() {
+          ctx.save();
+          ctx.translate(this.x, this.y);
+          ctx.rotate((this.rot * Math.PI) / 180);
+          ctx.fillStyle = this.color;
+          ctx.fillRect(-this.r / 2, -this.r / 2, this.r, this.r);
+          ctx.restore();
+        }
+      }
+
+      for (let i = 0; i < 120; i++) {
+        particles.push(new Particle());
+      }
+
+      function loop() {
+        ctx.clearRect(0, 0, completeCanvas.width, completeCanvas.height);
+        particles.forEach(p => {
+          p.update();
+          p.draw();
+        });
+        animId = requestAnimationFrame(loop);
+      }
+      
+      loop();
+    }
+
+    function stopConfettiEngine() {
+      if (animId) {
+        cancelAnimationFrame(animId);
+        animId = null;
+      }
+      const ctx = completeCanvas.getContext('2d');
+      ctx.clearRect(0, 0, completeCanvas.width, completeCanvas.height);
+    }
+
+    // --- Action Button Click Handlers ---
+    startGameBtn.addEventListener('click', prepareGame);
+    startGameBtn.addEventListener('touchstart', (e) => {
+      sound.init();
+    }, {passive: true});
+
+    backHomeBtn.addEventListener('click', () => {
+      stopConfettiEngine();
+      gameScreen.classList.add('hidden');
+      homeScreen.classList.remove('hidden');
+      document.body.style.backgroundColor = 'var(--color-bg-warm)';
+    });
+
+    restartBtn.addEventListener('click', () => {
+      stopConfettiEngine();
+      successOverlay.classList.remove('active');
+      gameScreen.classList.add('hidden');
+      homeScreen.classList.remove('hidden');
+      document.body.style.backgroundColor = 'var(--color-bg-warm)';
+    });
+
+    // --- Page Load Initializer ---
+    window.addEventListener('DOMContentLoaded', () => {
+      buildImageCards();
+    });
+
+    // --- PWA Service Worker & Install Prompt Trigger ---
+    let deferredPrompt = null;
+    const installBanner = document.getElementById('pwa-install-banner');
+    const installBtn = document.getElementById('pwa-install-btn');
+    const closeBtn = document.getElementById('pwa-close-btn');
+
+    // Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+          .then((reg) => console.log('Service Worker registered successfully!', reg.scope))
+          .catch((err) => console.error('Service Worker registration failed:', err));
+      });
+    }
+
+    // iOS-specific display check
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+
+    if (isIOS && !isStandalone) {
+      // Display guide banner for iOS devices
+      installBanner.classList.remove('hidden');
+      const titleEl = installBanner.querySelector('.install-title');
+      const subtitleEl = installBanner.querySelector('.install-subtitle');
+      const btnEl = installBanner.querySelector('.install-action-btn');
+      
+      titleEl.textContent = "홈 화면에 앱 추가하기! ⭐";
+      subtitleEl.textContent = "인터넷 연결 없이 전체화면으로 플레이해요!";
+      btnEl.textContent = "방법 보기 📤";
+      
+      btnEl.addEventListener('click', () => {
+        alert("아이폰/아이패드 설치 방법:\n\n1. Safari 화면 하단의 [공유] 📤 버튼을 클릭하세요.\n2. 메뉴에서 [홈 화면에 추가] ➕ 버튼을 선택하세요.\n3. 우측 상단의 [추가]를 클릭하면 바탕화면에 설치됩니다! 🧩");
+      });
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      // Only show on home screen, not on active game
+      if (!homeScreen.classList.contains('hidden')) {
+        installBanner.classList.remove('hidden');
+      }
+    });
+
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`PWA Install Choice: ${outcome}`);
+      deferredPrompt = null;
+      installBanner.classList.add('hidden');
+    });
+
+    closeBtn.addEventListener('click', () => {
+      installBanner.classList.add('hidden');
+    });
+
+  </script>
+</body>
+</html>
