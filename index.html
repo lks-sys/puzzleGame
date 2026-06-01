@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,16 +11,23 @@
   <link rel="apple-touch-icon" href="assets/icon-512.png">
   <title>🧩 신나는 퍼즐놀이 | 어린이 퍼즐 게임</title>
   <!-- Google Fonts for friendly rounded typography -->
-  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nunito:wght@400;700;800&display=swap"
+    rel="stylesheet">
   <style>
     /* --- CSS Variables & Color System --- */
     :root {
-      --color-primary: #FF6B6B;     /* Pastel Pink/Red */
-      --color-secondary: #FFD93D;   /* Vibrant Yellow */
-      --color-success: #6BCB77;     /* Fresh Green */
-      --color-accent: #4D96FF;      /* Sky Blue */
-      --color-bg-warm: #FFF9F0;     /* Cozy Cream Home Background */
-      --color-bg-complete: #87CEEB; /* Sky Blue Completion Background */
+      --color-primary: #FF6B6B;
+      /* Pastel Pink/Red */
+      --color-secondary: #FFD93D;
+      /* Vibrant Yellow */
+      --color-success: #6BCB77;
+      /* Fresh Green */
+      --color-accent: #4D96FF;
+      /* Sky Blue */
+      --color-bg-warm: #FFF9F0;
+      /* Cozy Cream Home Background */
+      --color-bg-complete: #87CEEB;
+      /* Sky Blue Completion Background */
       --font-main: 'Jua', 'Nunito', sans-serif;
       --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       --transition-smooth: all 0.3s ease;
@@ -55,6 +63,7 @@
       opacity: 0.45;
       animation: float 8s infinite alternate ease-in-out;
     }
+
     .bg-blob-1 {
       width: 300px;
       height: 300px;
@@ -62,6 +71,7 @@
       top: -50px;
       left: -100px;
     }
+
     .bg-blob-2 {
       width: 400px;
       height: 400px;
@@ -72,12 +82,19 @@
     }
 
     @keyframes float {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(30px, 40px) scale(1.15); }
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      100% {
+        transform: translate(30px, 40px) scale(1.15);
+      }
     }
 
     /* --- Typography Utilities --- */
-    h1, h2, h3 {
+    h1,
+    h2,
+    h3 {
       font-weight: normal;
       text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.8);
     }
@@ -93,7 +110,8 @@
     /* --- Screens Container --- */
     .screen {
       width: 100%;
-      max-width: 480px; /* Mobile focused max-width */
+      max-width: 480px;
+      /* Mobile focused max-width */
       min-height: 100vh;
       padding: 24px 16px;
       display: flex;
@@ -123,7 +141,7 @@
       flex-direction: column;
       align-items: center;
       gap: 5px;
-      text-shadow: 3px 3px 0 #FFF, 5px 5px 0 rgba(0,0,0,0.06);
+      text-shadow: 3px 3px 0 #FFF, 5px 5px 0 rgba(0, 0, 0, 0.06);
     }
 
     .app-subtitle {
@@ -251,7 +269,7 @@
       box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
       transition: var(--transition-bounce);
       margin-top: 10px;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
       animation: heartbeat 2s infinite ease-in-out;
     }
 
@@ -273,8 +291,15 @@
     }
 
     @keyframes heartbeat {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.04); }
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.04);
+      }
     }
 
     /* ==========================================
@@ -294,9 +319,9 @@
       color: #7B6E64;
       background: white;
       border-radius: 20px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
       transition: var(--transition-bounce);
-      border: 1px solid rgba(0,0,0,0.05);
+      border: 1px solid rgba(0, 0, 0, 0.05);
     }
 
     .back-btn:hover {
@@ -323,7 +348,7 @@
       background: white;
       padding: 8px 8px 18px 8px;
       border-radius: 12px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
       transform: rotate(-2deg);
       transition: var(--transition-bounce);
       cursor: pointer;
@@ -331,7 +356,7 @@
       flex-direction: column;
       align-items: center;
       gap: 6px;
-      border: 1px solid rgba(0,0,0,0.03);
+      border: 1px solid rgba(0, 0, 0, 0.03);
     }
 
     .hint-card:hover {
@@ -367,7 +392,7 @@
       background: #F0E6D2;
       border-radius: 20px;
       padding: 8px;
-      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1), inset 0 2px 5px rgba(255,255,255,0.7);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1), inset 0 2px 5px rgba(255, 255, 255, 0.7);
       box-sizing: border-box;
       gap: 4px;
       position: relative;
@@ -391,7 +416,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 80%);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 80%);
       pointer-events: none;
     }
 
@@ -442,7 +467,7 @@
       padding: 8px 4px 14px 4px;
       width: 100%;
       scrollbar-width: thin;
-      scrollbar-color: rgba(0,0,0,0.1) transparent;
+      scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
       min-height: 90px;
       align-items: center;
     }
@@ -450,8 +475,9 @@
     #pieces-tray::-webkit-scrollbar {
       height: 6px;
     }
+
     #pieces-tray::-webkit-scrollbar-thumb {
-      background-color: rgba(0,0,0,0.1);
+      background-color: rgba(0, 0, 0, 0.1);
       border-radius: 10px;
     }
 
@@ -494,31 +520,71 @@
        ANIMATIONS KEYFRAMES
        ========================================== */
     @keyframes bounceIn {
-      0% { transform: scale(0.3); opacity: 0; }
-      50% { transform: scale(1.05); }
-      70% { transform: scale(0.9); }
-      100% { transform: scale(1); opacity: 1; }
+      0% {
+        transform: scale(0.3);
+        opacity: 0;
+      }
+
+      50% {
+        transform: scale(1.05);
+      }
+
+      70% {
+        transform: scale(0.9);
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
 
     @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-8px); }
-      40%, 80% { transform: translateX(8px); }
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      20%,
+      60% {
+        transform: translateX(-8px);
+      }
+
+      40%,
+      80% {
+        transform: translateX(8px);
+      }
     }
 
     @keyframes flashCorrect {
-      0% { background-color: rgba(107, 203, 119, 0.4); }
-      100% { background-color: transparent; }
+      0% {
+        background-color: rgba(107, 203, 119, 0.4);
+      }
+
+      100% {
+        background-color: transparent;
+      }
     }
 
     @keyframes flashWrong {
-      0% { background-color: rgba(255, 107, 107, 0.4); }
-      100% { background-color: transparent; }
+      0% {
+        background-color: rgba(255, 107, 107, 0.4);
+      }
+
+      100% {
+        background-color: transparent;
+      }
     }
 
     @keyframes miniJiggle {
-      0% { transform: scale(1.08) translateY(-6px) rotate(-1.5deg); }
-      100% { transform: scale(1.08) translateY(-8px) rotate(1.5deg); }
+      0% {
+        transform: scale(1.08) translateY(-6px) rotate(-1.5deg);
+      }
+
+      100% {
+        transform: scale(1.08) translateY(-8px) rotate(1.5deg);
+      }
     }
 
     /* ==========================================
@@ -537,18 +603,37 @@
     .start-overlay-text {
       font-size: 5rem;
       color: var(--color-primary);
-      text-shadow: 4px 4px 0 #FFF, 8px 8px 0 rgba(0,0,0,0.1);
+      text-shadow: 4px 4px 0 #FFF, 8px 8px 0 rgba(0, 0, 0, 0.1);
       opacity: 0;
       transform: scale(0.2);
       animation: startZoom 2s forwards ease-out;
     }
 
     @keyframes startZoom {
-      0% { transform: scale(0.2); opacity: 0; }
-      30% { transform: scale(1.3); opacity: 1; }
-      50% { transform: scale(1.0); opacity: 1; }
-      80% { transform: scale(1.0); opacity: 0.8; }
-      100% { transform: scale(3.5); opacity: 0; }
+      0% {
+        transform: scale(0.2);
+        opacity: 0;
+      }
+
+      30% {
+        transform: scale(1.3);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(1.0);
+        opacity: 1;
+      }
+
+      80% {
+        transform: scale(1.0);
+        opacity: 0.8;
+      }
+
+      100% {
+        transform: scale(3.5);
+        opacity: 0;
+      }
     }
 
     /* ==========================================
@@ -557,7 +642,8 @@
     .complete-overlay {
       position: fixed;
       inset: 0;
-      background-color: rgba(135, 206, 235, 0.9); /* Skyblue overlay */
+      background-color: rgba(135, 206, 235, 0.9);
+      /* Skyblue overlay */
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -579,7 +665,7 @@
       border-radius: 36px;
       padding: 30px 40px;
       text-align: center;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
       border: 4px solid var(--color-secondary);
       transform: scale(0.5);
       transition: var(--transition-bounce);
@@ -601,7 +687,7 @@
       font-size: 2.4rem;
       color: var(--color-primary);
       margin-bottom: 8px;
-      text-shadow: 2px 2px 0 rgba(0,0,0,0.05);
+      text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.05);
     }
 
     .complete-desc {
@@ -632,8 +718,15 @@
     }
 
     @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-15px); }
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-15px);
+      }
     }
 
     /* Sparkle Particle Canvas Background */
@@ -647,13 +740,18 @@
 
     /* Golden Glow Pulse on Complete board */
     .golden-glow {
-      box-shadow: 0 0 35px 8px #FFD93D, 0 10px 40px rgba(0,0,0,0.15) !important;
+      box-shadow: 0 0 35px 8px #FFD93D, 0 10px 40px rgba(0, 0, 0, 0.15) !important;
       animation: goldenPulse 2s infinite alternate ease-in-out !important;
     }
 
     @keyframes goldenPulse {
-      0% { box-shadow: 0 0 30px 6px #FFD93D, 0 10px 40px rgba(0,0,0,0.15); }
-      100% { box-shadow: 0 0 45px 16px #FFD93D, 0 10px 40px rgba(0,0,0,0.15); }
+      0% {
+        box-shadow: 0 0 30px 6px #FFD93D, 0 10px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      100% {
+        box-shadow: 0 0 45px 16px #FFD93D, 0 10px 40px rgba(0, 0, 0, 0.15);
+      }
     }
 
     /* --- PWA Install Banner Styles --- */
@@ -668,6 +766,7 @@
       box-shadow: 0 4px 15px rgba(255, 107, 107, 0.2);
       animation: slideDown 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
+
     .install-content {
       max-width: 480px;
       margin: 0 auto;
@@ -676,21 +775,26 @@
       justify-content: space-between;
       gap: 12px;
     }
+
     .install-icon {
       font-size: 1.8rem;
     }
+
     .install-text-wrapper {
       flex-grow: 1;
     }
+
     .install-title {
       font-size: 1.1rem;
       font-weight: bold;
-      text-shadow: 1px 1px 0 rgba(0,0,0,0.1);
+      text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
     }
+
     .install-subtitle {
       font-size: 0.8rem;
       opacity: 0.9;
     }
+
     .install-action-btn {
       padding: 8px 16px;
       background: white;
@@ -698,24 +802,33 @@
       border-radius: 14px;
       font-size: 0.9rem;
       font-weight: bold;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       transition: var(--transition-bounce);
     }
+
     .install-action-btn:active {
       transform: scale(0.9);
     }
+
     .install-close-btn {
       background: transparent;
-      color: rgba(255,255,255,0.7);
+      color: rgba(255, 255, 255, 0.7);
       font-size: 1.1rem;
       padding: 4px;
     }
+
     @keyframes slideDown {
-      from { transform: translateY(-100%); }
-      to { transform: translateY(0); }
+      from {
+        transform: translateY(-100%);
+      }
+
+      to {
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
+
 <body>
 
   <!-- Playful App Installation Banner -->
@@ -815,130 +928,6 @@
        JAVASCRIPT GAME CONTROLLER MODULE
        ========================================== -->
   <script>
-    // --- Custom Characters SVG Drawings ---
-    const CinnamrollSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
-      <defs>
-        <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#E8F4F8"/>
-          <stop offset="100%" stop-color="#B9DDF1"/>
-        </linearGradient>
-        <linearGradient id="cloudGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#FFF5F7"/>
-          <stop offset="100%" stop-color="#FFDEE9"/>
-        </linearGradient>
-      </defs>
-      <rect width="800" height="600" fill="url(#skyGrad)"/>
-      <g fill="#FFF">
-        <circle cx="150" cy="120" r="4"/>
-        <circle cx="650" cy="180" r="5"/>
-        <circle cx="250" cy="450" r="3"/>
-        <circle cx="550" cy="400" r="4"/>
-      </g>
-      <g fill="#FFE87C">
-        <polygon points="100,80 103,87 110,88 105,93 106,100 100,96 94,100 95,93 90,88 97,87" />
-        <polygon points="680,120 682,125 687,126 683,130 684,135 680,132 676,135 677,130 673,126 678,125" />
-        <polygon points="200,380 201,383 205,384 202,387 203,391 200,389 197,391 198,387 195,384 199,383" />
-      </g>
-      <path d="M50 480 a 45 45 0 0 1 80 -10 a 50 50 0 0 1 90 10 a 40 40 0 0 1 20 60 H 30 Z" fill="url(#cloudGrad)" opacity="0.85" />
-      <path d="M550 180 a 35 35 0 0 1 60 -10 a 40 40 0 0 1 70 10 a 30 30 0 0 1 20 40 H 520 Z" fill="url(#cloudGrad)" opacity="0.85" />
-      <ellipse cx="400" cy="300" rx="140" ry="110" fill="#FFF" stroke="#68A5C6" stroke-width="4" />
-      <path d="M 280 280 C 120 280 80 400 120 440 C 160 480 240 440 280 340 Z" fill="#FFF" stroke="#68A5C6" stroke-width="4" />
-      <path d="M 520 280 C 680 280 720 400 680 440 C 640 480 560 440 520 340 Z" fill="#FFF" stroke="#68A5C6" stroke-width="4" />
-      <ellipse cx="340" cy="295" rx="12" ry="18" fill="#4B9CD3" />
-      <ellipse cx="338" cy="290" rx="4" ry="6" fill="#FFF" />
-      <ellipse cx="460" cy="295" rx="12" ry="18" fill="#4B9CD3" />
-      <ellipse cx="458" cy="290" rx="4" ry="6" fill="#FFF" />
-      <path d="M 388 320 Q 400 332 412 320" fill="none" stroke="#68A5C6" stroke-width="4" stroke-linecap="round" />
-      <ellipse cx="295" cy="325" rx="18" ry="12" fill="#FFC1C1" />
-      <ellipse cx="505" cy="325" rx="18" ry="12" fill="#FFC1C1" />
-      <polygon points="400,140 408,160 428,160 412,172 418,192 400,180 382,192 388,172 372,160 392,160" fill="#FFE87C" stroke="#D19E00" stroke-width="2" />
-    </svg>`;
-
-    const AmongUsSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
-      <defs>
-        <linearGradient id="spaceGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#0F101E"/>
-          <stop offset="100%" stop-color="#241B35"/>
-        </linearGradient>
-        <linearGradient id="visorGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#DDF5FF"/>
-          <stop offset="100%" stop-color="#76B5D7"/>
-        </linearGradient>
-      </defs>
-      <rect width="800" height="600" fill="url(#spaceGrad)"/>
-      <g fill="#FFF">
-        <circle cx="100" cy="150" r="2" opacity="0.8"/>
-        <circle cx="250" cy="80" r="1.5" opacity="0.6"/>
-        <circle cx="650" cy="200" r="2.5" opacity="0.9"/>
-        <circle cx="450" cy="400" r="2" opacity="0.7"/>
-        <circle cx="700" cy="480" r="1" opacity="0.5"/>
-        <circle cx="300" cy="520" r="3" opacity="0.9"/>
-      </g>
-      <circle cx="680" cy="100" r="45" fill="#FF8D6B"/>
-      <path d="M 635 100 Q 680 120 725 100" fill="none" stroke="#FFA78C" stroke-width="6"/>
-      <g transform="translate(180, 160) rotate(-15)">
-        <rect x="-35" y="30" width="40" height="90" rx="15" fill="#1C7E8D" stroke="#000" stroke-width="5" />
-        <rect x="0" y="10" width="80" height="130" rx="40" fill="#28AEC4" stroke="#000" stroke-width="5" />
-        <rect x="5" y="110" width="30" height="40" rx="10" fill="#28AEC4" stroke="#000" stroke-width="5" />
-        <rect x="45" y="110" width="30" height="40" rx="10" fill="#28AEC4" stroke="#000" stroke-width="5" />
-        <rect x="40" y="30" width="60" height="45" rx="20" fill="url(#visorGrad)" stroke="#000" stroke-width="5" />
-        <ellipse cx="60" cy="42" rx="12" ry="5" fill="#FFF" />
-        <path d="M 40 -15 Q 40 -5 40 10" fill="none" stroke="#2D8D44" stroke-width="4"/>
-        <path d="M 40 -15 Q 55 -20 60 -10 Q 50 -5 40 -10" fill="#6BCB77" stroke="#000" stroke-width="2"/>
-        <path d="M 40 -15 Q 25 -20 20 -10 Q 30 -5 40 -10" fill="#6BCB77" stroke="#000" stroke-width="2"/>
-      </g>
-      <g transform="translate(460, 240) rotate(20)">
-        <rect x="75" y="30" width="40" height="90" rx="15" fill="#A81D1D" stroke="#000" stroke-width="5" />
-        <rect x="0" y="10" width="80" height="130" rx="40" fill="#EA3A3A" stroke="#000" stroke-width="5" />
-        <rect x="5" y="110" width="30" height="40" rx="10" fill="#EA3A3A" stroke="#000" stroke-width="5" />
-        <rect x="45" y="110" width="30" height="40" rx="10" fill="#EA3A3A" stroke="#000" stroke-width="5" />
-        <rect x="-20" y="30" width="60" height="45" rx="20" fill="url(#visorGrad)" stroke="#000" stroke-width="5" />
-        <ellipse cx="0" cy="42" rx="12" ry="5" fill="#FFF" />
-        <rect x="25" y="-12" width="30" height="25" fill="#FFF" stroke="#000" stroke-width="3" />
-        <path d="M 55 13 L 65 30" fill="none" stroke="#FFF" stroke-width="6"/>
-      </g>
-    </svg>`;
-
-    const MochielSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
-      <defs>
-        <linearGradient id="pinkGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#FFECEF"/>
-          <stop offset="100%" stop-color="#FFCCD5"/>
-        </linearGradient>
-        <linearGradient id="starGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#FFF176"/>
-          <stop offset="100%" stop-color="#FFB300"/>
-        </linearGradient>
-      </defs>
-      <rect width="800" height="600" fill="url(#pinkGrad)"/>
-      <g fill="#FFF" opacity="0.75">
-        <polygon points="120,150 125,140 130,150 140,155 130,160 125,170 120,160 110,155" />
-        <polygon points="680,450 685,440 690,450 700,455 690,460 685,470 680,460 670,455" />
-      </g>
-      <path d="M 230 300 C 130 280 120 180 190 200 C 230 210 240 250 250 300 Z" fill="#FFF" stroke="#FFA4B4" stroke-width="3" />
-      <path d="M 570 300 C 670 280 680 180 610 200 C 570 210 560 250 550 300 Z" fill="#FFF" stroke="#FFA4B4" stroke-width="3" />
-      <rect x="250" y="220" width="300" height="240" rx="120" fill="#FFF" stroke="#FFA4B4" stroke-width="4" />
-      <path d="M 290 230 Q 250 140 310 160 Z" fill="#FFF" stroke="#FFA4B4" stroke-width="4" />
-      <path d="M 295 210 Q 275 160 305 175 Z" fill="#FFA4B4" />
-      <path d="M 510 230 Q 550 140 490 160 Z" fill="#FFF" stroke="#FFA4B4" stroke-width="4" />
-      <path d="M 505 210 Q 525 160 495 175 Z" fill="#FFA4B4" />
-      <ellipse cx="400" cy="110" rx="70" ry="18" fill="none" stroke="#FFE082" stroke-width="7" />
-      <ellipse cx="340" cy="290" rx="12" ry="16" fill="#3D302A" />
-      <circle cx="336" cy="284" r="5" fill="#FFF" />
-      <circle cx="344" cy="294" r="2.5" fill="#FFF" />
-      <ellipse cx="460" cy="290" rx="12" ry="16" fill="#3D302A" />
-      <circle cx="456" cy="284" r="5" fill="#FFF" />
-      <circle cx="464" cy="294" r="2.5" fill="#FFF" />
-      <path d="M 390 310 Q 400 318 410 310" fill="none" stroke="#3D302A" stroke-width="3" stroke-linecap="round" />
-      <ellipse cx="290" cy="330" rx="18" ry="10" fill="#FF8A80" opacity="0.6" />
-      <ellipse cx="510" cy="330" rx="18" ry="10" fill="#FF8A80" opacity="0.6" />
-      <polygon points="400,320 410,345 435,345 415,360 422,385 400,370 378,385 385,360 365,345 390,345" fill="url(#starGrad)" stroke="#FFA000" stroke-width="2" />
-      <circle cx="360" cy="365" r="15" fill="#FFF" stroke="#FFA4B4" stroke-width="3" />
-      <circle cx="440" cy="365" r="15" fill="#FFF" stroke="#FFA4B4" stroke-width="3" />
-    </svg>`;
-
-    const getSvgDataUri = (svgStr) => `data:image/svg+xml;utf8,${encodeURIComponent(svgStr.trim())}`;
-
     // --- Asset Configurations ---
     const themes = [
       { id: 1, name: "무지개 숲속 소풍", path: "assets/image1.png" },
@@ -946,9 +935,8 @@
       { id: 3, name: "돌고래와 바다 산호초", path: "assets/image3.png" },
       { id: 4, name: "달콤한 캔디 성", path: "assets/image4.png" },
       { id: 5, name: "행복한 공룡 계곡", path: "assets/image5.png" },
-      { id: 6, name: "시나모롤늘하늘", path: getSvgDataUri(CinnamrollSVG) },
-      { id: 7, name: "어몽어스 우주", path: getSvgDataUri(AmongUsSVG) },
-      { id: 8, name: "천사 아기 모찌엘", path: getSvgDataUri(MochielSVG) }
+      { id: 6, name: "모찌엘과 모찌", path: "assets/image6.png" },
+      { id: 7, name: "흔한남매 공포체험", path: "assets/image7.png" },
     ];
 
     const gridConfigs = {
@@ -985,16 +973,16 @@
             freqs.forEach((freq, idx) => {
               const osc = this.ctx.createOscillator();
               const gain = this.ctx.createGain();
-              
+
               osc.type = 'triangle';
               osc.frequency.setValueAtTime(freq, now + idx * 0.12);
-              
+
               gain.gain.setValueAtTime(0.2, now + idx * 0.12);
               gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.35);
-              
+
               osc.connect(gain);
               gain.connect(this.ctx.destination);
-              
+
               osc.start(now + idx * 0.12);
               osc.stop(now + idx * 0.12 + 0.35);
             });
@@ -1006,16 +994,16 @@
             freqs.forEach((freq, idx) => {
               const osc = this.ctx.createOscillator();
               const gain = this.ctx.createGain();
-              
+
               osc.type = 'sine';
               osc.frequency.setValueAtTime(freq, now + idx * 0.15);
-              
+
               gain.gain.setValueAtTime(0.18, now + idx * 0.15);
               gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.15 + 0.45);
-              
+
               osc.connect(gain);
               gain.connect(this.ctx.destination);
-              
+
               osc.start(now + idx * 0.15);
               osc.stop(now + idx * 0.15 + 0.45);
             });
@@ -1026,20 +1014,20 @@
             const osc = this.ctx.createOscillator();
             const filter = this.ctx.createBiquadFilter();
             const gain = this.ctx.createGain();
-            
+
             osc.type = 'sawtooth';
             osc.frequency.setValueAtTime(233.08, now);
-            
+
             filter.type = 'lowpass';
             filter.frequency.setValueAtTime(700, now);
-            
+
             gain.gain.setValueAtTime(0.25, now);
             gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
-            
+
             osc.connect(filter);
             filter.connect(gain);
             gain.connect(this.ctx.destination);
-            
+
             osc.start(now);
             osc.stop(now + 0.4);
             break;
@@ -1048,21 +1036,21 @@
             // C4(261.6)->G4(392)->E5(659.3)->G5(784)->C6(1046.5) Fanfare
             const freqs = [261.63, 392.00, 659.25, 783.99, 1046.50];
             const startOffsets = [0, 0.12, 0.24, 0.36, 0.48];
-            
+
             freqs.forEach((freq, idx) => {
               const osc = this.ctx.createOscillator();
               const gain = this.ctx.createGain();
-              
+
               osc.type = idx === 4 ? 'sine' : 'triangle';
               osc.frequency.setValueAtTime(freq, now + startOffsets[idx]);
-              
+
               const length = idx === 4 ? 0.95 : 0.45;
               gain.gain.setValueAtTime(0.2, now + startOffsets[idx]);
               gain.gain.exponentialRampToValueAtTime(0.001, now + startOffsets[idx] + length);
-              
+
               osc.connect(gain);
               gain.connect(this.ctx.destination);
-              
+
               osc.start(now + startOffsets[idx]);
               osc.stop(now + startOffsets[idx] + length);
             });
@@ -1088,12 +1076,12 @@
     const imageSelectorGrid = document.getElementById('image-selector-grid');
     const pieceBtns = document.querySelectorAll('.piece-btn');
     const startGameBtn = document.getElementById('start-game-btn');
-    
+
     const remainingCounter = document.getElementById('remaining-counter');
     const hintImage = document.getElementById('hint-image');
     const puzzleBoard = document.getElementById('puzzle-board');
     const piecesTray = document.getElementById('pieces-tray');
-    
+
     const backHomeBtn = document.getElementById('btn-back-home');
     const startOverlay = document.getElementById('start-overlay');
     const successOverlay = document.getElementById('success-overlay');
@@ -1108,10 +1096,10 @@
         card.className = 'image-card';
         card.dataset.id = theme.id;
         card.innerHTML = `
-          <img class="image-card-img" src="${theme.path}" alt="${theme.name}" loading="lazy">
-          <div class="image-card-title">${theme.name}</div>
+        <img class="image-card-img" src="${theme.path}" alt="${theme.name}" loading="lazy">
+        <div class="image-card-title">${theme.name}</div>
         `;
-        
+
         // Touch & mouse safe click trigger
         const selectCard = () => {
           document.querySelectorAll('.image-card').forEach(c => c.classList.remove('selected'));
@@ -1120,15 +1108,16 @@
           startGameBtn.disabled = false;
           sound.init(); // Warm up AudioContext on click
         };
-        
+
         card.addEventListener('click', selectCard);
         card.addEventListener('touchstart', (e) => {
           // Prevent standard emulation delay
           sound.init();
-        }, {passive: true});
-        
+        }, { passive: true });
+
         imageSelectorGrid.appendChild(card);
       });
+
     }
 
     // Connect Piece Selector Buttons
@@ -1172,13 +1161,13 @@
         const cell = document.createElement('div');
         cell.className = 'board-cell';
         cell.dataset.id = i;
-        
+
         // Setup Grid Click logic
         cell.addEventListener('click', () => handleBoardCellTap(i));
         cell.addEventListener('touchstart', (e) => {
           sound.init();
-        }, {passive: true});
-        
+        }, { passive: true });
+
         puzzleBoard.appendChild(cell);
       }
 
@@ -1222,7 +1211,7 @@
         piece.addEventListener('click', selectPiece);
         piece.addEventListener('touchstart', (e) => {
           sound.init();
-        }, {passive: true});
+        }, { passive: true });
       });
 
       // Recalculate dimensions once layout stabilizes
@@ -1237,7 +1226,7 @@
       const boardRect = puzzleBoard.getBoundingClientRect();
       const boardWidth = boardRect.width;
       const boardHeight = boardRect.height;
-      
+
       const cellWidth = (boardWidth - (4 * (config.cols - 1)) - 16) / config.cols; // account for gaps/paddings
       const cellHeight = (boardHeight - (4 * (config.rows - 1)) - 16) / config.rows;
 
@@ -1250,7 +1239,7 @@
         piece.style.height = `${cellHeight}px`;
         piece.style.backgroundImage = `url(${selectedImage.path})`;
         piece.style.backgroundSize = `${boardWidth - 16}px ${boardHeight - 16}px`;
-        
+
         // Exact position slice offset
         piece.style.backgroundPosition = `-${col * cellWidth}px -${row * cellHeight}px`;
       });
@@ -1265,7 +1254,7 @@
         const boardRect = puzzleBoard.getBoundingClientRect();
         const cellWidth = (boardRect.width - (4 * (config.cols - 1)) - 16) / config.cols;
         const cellHeight = (boardRect.height - (4 * (config.rows - 1)) - 16) / config.rows;
-        
+
         document.querySelectorAll('.board-cell').forEach(cell => {
           const id = parseInt(cell.dataset.id);
           if (boardState[id]) {
@@ -1372,7 +1361,7 @@
           // Success indicators
           cellEl.classList.add('correct-flash');
           sound.play('correct');
-          
+
           setTimeout(() => cellEl.classList.remove('correct-flash'), 500);
 
           // Permanently purge element from tray
@@ -1391,7 +1380,7 @@
           // --- INCORRECT HIT! ---
           sound.play('wrong');
           cellEl.classList.add('wrong-flash');
-          
+
           setTimeout(() => cellEl.classList.remove('wrong-flash'), 500);
 
           // Return original visibility in drawer
@@ -1496,7 +1485,7 @@
         });
         animId = requestAnimationFrame(loop);
       }
-      
+
       loop();
     }
 
@@ -1513,7 +1502,7 @@
     startGameBtn.addEventListener('click', prepareGame);
     startGameBtn.addEventListener('touchstart', (e) => {
       sound.init();
-    }, {passive: true});
+    }, { passive: true });
 
     backHomeBtn.addEventListener('click', () => {
       stopConfettiEngine();
@@ -1560,11 +1549,11 @@
       const titleEl = installBanner.querySelector('.install-title');
       const subtitleEl = installBanner.querySelector('.install-subtitle');
       const btnEl = installBanner.querySelector('.install-action-btn');
-      
+
       titleEl.textContent = "홈 화면에 앱 추가하기! ⭐";
       subtitleEl.textContent = "인터넷 연결 없이 전체화면으로 플레이해요!";
       btnEl.textContent = "방법 보기 📤";
-      
+
       btnEl.addEventListener('click', () => {
         alert("아이폰/아이패드 설치 방법:\n\n1. Safari 화면 하단의 [공유] 📤 버튼을 클릭하세요.\n2. 메뉴에서 [홈 화면에 추가] ➕ 버튼을 선택하세요.\n3. 우측 상단의 [추가]를 클릭하면 바탕화면에 설치됩니다! 🧩");
       });
@@ -1594,4 +1583,5 @@
 
   </script>
 </body>
+
 </html>

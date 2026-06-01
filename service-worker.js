@@ -8,7 +8,8 @@ const ASSETS = [
   './assets/image2.png',
   './assets/image3.png',
   './assets/image4.png',
-  './assets/image5.png'
+  './assets/image5.png',
+  './assets/image6.png',
 ];
 
 // Install Event - Pre-caches all main resources
